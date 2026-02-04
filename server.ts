@@ -1,0 +1,25 @@
+import "dotenv/config";
+import express, { Application } from "express";
+import userRouters from "./src/routes/user.routes";
+import { ErrorHandlerMiddleware } from "./src/middlewares/errors/errorHandler";
+import authRoutes from "./src/routes/auth.routes";
+import dotenv from "dotenv";
+dotenv.config();
+
+const app: Application = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
+
+// ROUTES
+app.use("/api/users", userRouters);
+app.use("/api/auth", authRoutes);
+
+// MIDDLEWARES
+app.use(ErrorHandlerMiddleware);
+
+app.listen(5000, () => {
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+});
+
+console.log("JWT_SECRET:", process.env.REFRESH_TOKEN_SECRET);
