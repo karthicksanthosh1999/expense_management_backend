@@ -48,6 +48,22 @@ export class AuthService {
     return { accessToken: newRefreshToken };
   }
 
+  async decodeUser(refreshToken: string) {
+    if (!refreshToken) {
+      throw new AppError("Refresh token missing", 401);
+    }
+
+    const payload = verifyRefreshToken(refreshToken);
+
+    const user = await this.userRepo.findById(payload.id);
+
+    if (!user) {
+      throw new AppError("User Not Found", 404, false);
+    }
+
+    return { user };
+  }
+
   async logout(userId: string) {
     await this.userRepo.updateRefreshToken(userId, null);
   }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/AuthService";
+import { AppError } from "../middlewares/errors/appError";
 
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -14,9 +15,9 @@ export class AuthController {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/api/auth/refresh",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
     });
 
     return res.json({
@@ -26,6 +27,16 @@ export class AuthController {
         fullName: user.fullName,
         email: user.email,
       },
+    });
+  }
+
+  async decodeUser(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    const data = await this.authService.decodeUser(refreshToken);
+
+    return res.status(200).json({
+      message: "User Decoded Successfully",
+      data: data?.user,
     });
   }
 
