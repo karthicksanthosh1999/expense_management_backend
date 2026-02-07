@@ -1,0 +1,12 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE IF NOT EXISTS category (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(100) NOT NULL,
+    color VARCHAR(100) NOT NULL,
+    userId UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    createdAt TIMESTAMP DEFAULT NOW(),
+    updatedAt TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_category_userId ON category(userId)

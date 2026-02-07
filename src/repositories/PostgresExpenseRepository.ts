@@ -10,7 +10,7 @@ export class PostgresqlExpenseRepository implements ExpenseRepository {
             `, [
             expense.id,
             expense.userId,
-            expense.title,
+            expense.description,
             expense.amount,
             expense.category,
         ]);

@@ -4,6 +4,7 @@ import userRouters from "./src/routes/user.routes";
 import { ErrorHandlerMiddleware } from "./src/middlewares/errors/errorHandler";
 import authRoutes from "./src/routes/auth.routes";
 import dotenv from "dotenv";
+import categoryRouter from "./src/routes/category.router";
 dotenv.config();
 
 const app: Application = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 // ROUTES
 app.use("/api/users", userRouters);
 app.use("/api/auth", authRoutes);
+app.use("/api/category", categoryRouter);
 
 // MIDDLEWARES
 app.use(ErrorHandlerMiddleware);

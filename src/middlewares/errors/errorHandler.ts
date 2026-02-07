@@ -1,13 +1,18 @@
-import e, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AppError } from "./appError";
 
-export const ErrorHandlerMiddleware = (err: Error, _req: Request, res: Response, _next: NextFunction) => {
+export const ErrorHandlerMiddleware = (
+    err: Error,
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+): Response => {
     if (err instanceof AppError) {
         return res.status(err.statusCode).json({
             message: err.message,
             statusCode: err.statusCode,
             status: err.isOperational,
-        })
+        });
     }
 
     console.error("🔥 Unexpected Error:", err);
@@ -16,4 +21,4 @@ export const ErrorHandlerMiddleware = (err: Error, _req: Request, res: Response,
         status: "error",
         message: "Internal server error",
     });
-}
+};
