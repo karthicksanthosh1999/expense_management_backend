@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import categoryRouter from "./src/routes/category.router";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import expenseRouter from "./src/routes/expense.router";
 dotenv.config();
 
 const app: Application = express();
@@ -27,6 +28,7 @@ app.use(
 app.use("/api/users", userRouters);
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRouter);
+app.use("/api/expense", expenseRouter);
 
 // MIDDLEWARES
 app.use(ErrorHandlerMiddleware);
@@ -34,5 +36,3 @@ app.use(ErrorHandlerMiddleware);
 app.listen(5000, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
-
-console.log("JWT_SECRET:", process.env.REFRESH_TOKEN_SECRET);
