@@ -22,7 +22,42 @@ export class ExpenseController {
   }
 
   async findAllExpense(req: Request, res: Response) {
-    const allExpense = await this.expenseService.getAllExpenses();
+    const {
+      search,
+      startDate: start,
+      endDate: end,
+      expenseType,
+      page = "1",
+      limit = "10",
+    } = req.body;
+
+    const pageNumber = Number(page);
+    const limitSize = Number(limit);
+
+    const offset = (pageNumber - 1) * limitSize;
+
+    const startDate =
+      typeof start === "string" && start.trim() ? new Date(start) : null;
+
+    const endDate =
+      typeof end === "string" && end.trim() ? new Date(end) : null;
+
+    const expenseTypeValue =
+      expenseType === "Expense" || expenseType === "Income"
+        ? expenseType
+        : null;
+
+    const searchValue = typeof search === "string" ? search : "";
+
+    const allExpense = await this.expenseService.getAllExpenses(
+      searchValue,
+      startDate,
+      endDate,
+      expenseTypeValue,
+      offset,
+      limitSize,
+    );
+
     return res.status(200).json({
       message: "Expense Fetch Successfully",
       data: allExpense,
@@ -30,11 +65,14 @@ export class ExpenseController {
   }
 
   async findSingleExpense(req: Request, res: Response) {
-    const { id } = req.body;
-    if (!id) {
+    const { id } = req.params;
+
+    const idValues = typeof id === "string" ? id : "";
+
+    if (!idValues) {
       throw new AppError("Id is required!", 400);
     }
-    const expense = await this.expenseService.singleExpense(id);
+    const expense = await this.expenseService.singleExpense(idValues);
     if (!expense) {
       throw new AppError("Expense Not Found!", 404);
     }
@@ -45,11 +83,14 @@ export class ExpenseController {
   }
 
   async deleteExpense(req: Request, res: Response) {
-    const { id } = req.body;
-    if (!id) {
+    const { id } = req.params;
+
+    const idValues = typeof id === "string" ? id : "";
+
+    if (!idValues) {
       throw new AppError("Id is required!", 400);
     }
-    const expense = await this.expenseService.deleteExpense(id);
+    const expense = await this.expenseService.deleteExpense(idValues);
     if (!expense) {
       throw new AppError("Expense Not Found!", 404);
     }
@@ -59,23 +100,26 @@ export class ExpenseController {
     });
   }
 
-  async updatedExpense(req: Request, res: Response) {
-    const { id, amount, description, userId, categoryId, expenseType } =
-      req.body;
+  async getAmount(req: Request, res: Response) {
+    const { startDate: start, endDate: end, expenseType } = req.body;
 
-    if (!id) {
-      throw new AppError("Id is required!", 400);
-    }
-    const expense = await this.expenseService.updateExpense(id, {
-      amount,
-      categoryId,
-      description,
-      expenseType,
-      userId,
-    });
+    const startDate =
+      typeof start === "string" && start.trim() ? new Date(start) : null;
+    const endDate =
+      typeof end === "string" && end.trim() ? new Date(end) : null;
+    const expenseTypeValue =
+      expenseType === "Expense" || expenseType === "Income"
+        ? expenseType
+        : null;
+
+    const amount = await this.expenseService.getAmount(
+      startDate,
+      endDate,
+      expenseTypeValue,
+    );
     return res.status(200).json({
-      message: "Expense Updated Successfully",
-      data: expense,
+      message: "Amount Fetched Successfully",
+      data: amount ?? 0,
     });
   }
 }

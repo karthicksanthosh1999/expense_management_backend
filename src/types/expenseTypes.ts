@@ -7,3 +7,14 @@ export interface TExpenseCategoryOTO {
     categoryId: string
     expenseType: TExpense
 }
+
+export type TExpenseFilterOptions = {
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+    expenseType?: TExpense;
+    categoryId?: string;
+    userId?: string;
+};
