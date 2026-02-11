@@ -3,8 +3,8 @@ export type ExpenseType = "Expense" | "Income"
 
 export class Expense {
     public readonly id?: string;
-    public createdAt?: Date;
-    public updatedAt?: Date;
+    public createdat?: Date;
+    public updatedat?: Date;
     constructor(
         params: {
             id?: string,
@@ -13,8 +13,8 @@ export class Expense {
             userId: string,
             categoryId: string,
             expenseType: ExpenseType,
-            createdAt?: Date;
-            updatedAt?: Date;
+            createdat?: Date;
+            updatedat?: Date;
         }
     ) {
         this.id = params.id;
@@ -23,8 +23,8 @@ export class Expense {
         this.userId = params.userId
         this.description = params.description;
         this.expenseType = params.expenseType;
-        this.createdAt = params.createdAt ?? new Date();
-        this.updatedAt = params.updatedAt ?? new Date();
+        this.createdat = params.createdat ?? new Date();
+        this.updatedat = params.updatedat ?? new Date();
     }
     public readonly userId: string;
     public readonly categoryId: string;

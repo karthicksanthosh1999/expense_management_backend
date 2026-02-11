@@ -3,7 +3,7 @@ import { ExpenseServices } from "../services/ExpenseService";
 import { AppError } from "../middlewares/errors/appError";
 
 export class ExpenseController {
-  constructor(private expenseService: ExpenseServices) {}
+  constructor(private expenseService: ExpenseServices) { }
 
   async createExpense(req: Request, res: Response) {
     const { amount, description, userId, categoryId, expenseType } = req.body;
@@ -48,7 +48,6 @@ export class ExpenseController {
         : null;
 
     const searchValue = typeof search === "string" ? search : "";
-
     const allExpense = await this.expenseService.getAllExpenses(
       searchValue,
       startDate,

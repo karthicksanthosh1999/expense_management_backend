@@ -17,7 +17,7 @@ export class PostgresExpenseRepository implements ExpenseRepository {
         limit: number,
         offset: number
     ): Promise<Expense[]> {
-
+        console.log(values)
         const query = `
                         SELECT
                         a.id,
@@ -25,8 +25,8 @@ export class PostgresExpenseRepository implements ExpenseRepository {
                         a.description,
                         a.userId,
                         a.categoryId,
-                        a.createdAt,
-                        a.updatedAt,
+                        a.createdat,
+                        a.updatedat,
                         a.expenseType,
 
                         json_build_object(
@@ -114,7 +114,7 @@ export class PostgresExpenseRepository implements ExpenseRepository {
 
     async getAmount(whereClause: string, values: any[]): Promise<{ amount: number; }> {
         let result = await pool.query(`
-                SELECT COALESCE(amount, 0) AS amount FROM total_amount FROM expense a ${whereClause}
+                SELECT COALESCE(amount, 0) AS total_amount FROM expense a ${whereClause}
             `, values)
         return result.rows[0]
     }

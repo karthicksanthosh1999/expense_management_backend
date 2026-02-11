@@ -18,3 +18,10 @@ export type TExpenseFilterOptions = {
     categoryId?: string;
     userId?: string;
 };
+
+export type TExpenseFilterValues = {
+    startDate: Date | null,
+    endDate: Date | null,
+    expenseType: TExpense | null,
+    search: string | null
+}

@@ -32,6 +32,9 @@ export class AuthController {
 
   async decodeUser(req: Request, res: Response) {
     const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+      throw new AppError("Token is missing", 401);
+    }
     const data = await this.authService.decodeUser(refreshToken);
 
     return res.status(200).json({

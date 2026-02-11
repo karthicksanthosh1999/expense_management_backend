@@ -1,9 +1,9 @@
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
 import { Expense, ExpenseType } from "../entities/Expense";
-import { TExpenseCategoryOTO } from "../types/expenseTypes";
+import { TExpenseCategoryOTO, TExpenseFilterValues } from "../types/expenseTypes";
 
 export class ExpenseServices {
-  constructor(private expenseRepo: ExpenseRepository) {}
+  constructor(private expenseRepo: ExpenseRepository) { }
 
   async addExpense(data: TExpenseCategoryOTO): Promise<Expense> {
     const signedAmount =
@@ -38,12 +38,14 @@ export class ExpenseServices {
 
     if (startDate) {
       values.push(startDate);
-      conditions.push(`a.createdAt >= $${values.length}`);
+      conditions.push(`a.createdat >= $${values.length}`);
     }
 
     if (endDate) {
-      values.push(endDate);
-      conditions.push(`a.createdAt <= $${values.length}`);
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      values.push(endOfDay);
+      conditions.push(`a.createdat <= $${values.length}`);
     }
 
     if (expenseType) {
@@ -87,19 +89,20 @@ export class ExpenseServices {
 
     if (startDate) {
       values.push(startDate);
-      conditions.push(`a.created_at >= $${values.length}`);
+      conditions.push(`a.createdAt >= $${values.length}`);
     }
 
     if (endDate) {
-      values.push(endDate);
-      conditions.push(`a.created_at <= $${values.length}`);
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999)
+      values.push(endOfDay);
+      conditions.push(`a.createdAt <= $${values.length}`);
     }
 
     if (expenseType) {
       values.push(expenseType);
-      conditions.push(`a.expense_type = $${values.length}`);
+      conditions.push(`a.expenseType = $${values.length}`);
     }
-
     const whereClause =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 

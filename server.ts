@@ -5,9 +5,9 @@ import { ErrorHandlerMiddleware } from "./src/middlewares/errors/errorHandler";
 import authRoutes from "./src/routes/auth.routes";
 import dotenv from "dotenv";
 import categoryRouter from "./src/routes/category.router";
+import expenseRouter from "./src/routes/expense.router";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import expenseRouter from "./src/routes/expense.router";
 dotenv.config();
 
 const app: Application = express();
@@ -15,11 +15,10 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(
   cors({
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: process.env.FRONTEND_BASEURL || "http://localhost:3000",
     credentials: true,
   }),
 );
