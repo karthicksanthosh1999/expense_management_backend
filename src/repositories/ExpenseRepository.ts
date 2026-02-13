@@ -89,5 +89,13 @@ export class PostgresExpenseRepository implements ExpenseRepository {
         expense.categoryId,
         expense.expenseType]
         )
+        return result.rows[0]
+    }
+
+    async getAmount(whereClause: string, values: any[]): Promise<{ amount: number }> {
+        const result = await pool.query(`
+
+            `)
+        return result.rows[0]
     }
 }
