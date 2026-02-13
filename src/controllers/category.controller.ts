@@ -19,6 +19,33 @@ export class CategoryController {
         })
     }
 
+    async filterCategory(req: Request, res: Response) {
+        const { startDate, endDate } = req.body;
+
+        const start =
+            typeof startDate === "string" && startDate.trim()
+                ? new Date(startDate)
+                : null;
+
+        const end =
+            typeof endDate === "string" && endDate.trim()
+                ? new Date(endDate)
+                : new Date();
+
+        const endOfDay = new Date(end);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const category = await this.categoryService.filterCategories(
+            start,
+            endOfDay
+        );
+
+        return res.status(200).json({
+            message: "Category Created Successfully",
+            data: category
+        })
+    }
+
     async getAllCategory(_req: Request, res: Response) {
         const categories = await this.categoryService.getAllCategory()
         return res.status(200).json({
@@ -33,9 +60,7 @@ export class CategoryController {
         if (!id) {
             throw new AppError("Invalid category id", 404, false)
         }
-
         const category = await this.categoryService.singleCategory(id)
-
         return res.status(200).json({
             message: "Category Fetch Successfully",
             data: category
@@ -48,9 +73,7 @@ export class CategoryController {
         if (!id) {
             throw new AppError("Invalid category id", 404, false)
         }
-
         const existingCategory = await this.categoryService.singleCategory(id)
-
         if (!existingCategory) {
             throw new AppError("Category Not Exist", 404, false)
         }

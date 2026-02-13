@@ -31,6 +31,55 @@ export class PostgresCategoryRepository implements CategoryRepository {
         return result.rows;
     }
 
+    async filterCategory(startDate: Date, endDate: Date): Promise<Category[]> {
+        let result = await pool.query(
+            `SELECT 
+                a.id,
+                a.title,
+                a.color,
+                a.userId,
+                a.createdAt,
+                a.updatedAt,
+
+                json_build_object(
+                    'id', b.id,
+                    'fullName', b.fullName,
+                    'email', b.email
+                ) AS user,
+
+                COALESCE(
+                    json_agg(
+                        json_build_object(
+                            'id', c.id,
+                            'amount', c.amount,
+                            'title', c.description,
+                            'createdAt', c.createdAt
+                        )
+                    ) FILTER (WHERE c.id IS NOT NULL),
+                    '[]'
+                ) AS expenses
+
+            FROM category a
+            INNER JOIN users b ON a.userId = b.id
+
+            LEFT JOIN expense c 
+                ON a.id = c.categoryId
+                AND (
+                    $1::timestamptz IS NULL
+                    OR (
+                        c.createdAt >= $1
+                        AND c.createdAt < $2
+                    )
+                )
+
+            GROUP BY a.id, b.id;
+            `,
+            [startDate ?? null, endDate ?? null]
+        );
+
+        return result.rows;
+    }
+
     async fineById(id: string): Promise<Category> {
         let result = await pool.query(
             `SELECT

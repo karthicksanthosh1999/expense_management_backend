@@ -13,6 +13,7 @@ categoryRouter.post('/create', (req, res) => categoryController.createCategory(r
 categoryRouter.get('/getAll', (req, res) => categoryController.getAllCategory(req, res))
 categoryRouter.get('/getSingle', (req, res) => categoryController.getSingleCategory(req, res))
 categoryRouter.delete('/delete', (req, res) => categoryController.deleteCategory(req, res))
+categoryRouter.post('/filter', (req, res) => categoryController.filterCategory(req, res))
 
 
 export default categoryRouter;

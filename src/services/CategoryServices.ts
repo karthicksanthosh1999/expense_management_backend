@@ -20,6 +20,11 @@ export class CategoryService {
         return allCategory
     }
 
+    async filterCategories(startDate: Date | null, endDate: Date | null): Promise<Category[]> {
+        const allCategory = await this.categoryRepo.filterCategory(startDate, endDate);
+        return allCategory
+    }
+
     async deleteCategory(id: string): Promise<Category> {
         const deletedCategory = await this.categoryRepo.deleteById(id);
         return deletedCategory

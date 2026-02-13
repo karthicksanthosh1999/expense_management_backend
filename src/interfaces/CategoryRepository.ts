@@ -6,4 +6,5 @@ export interface CategoryRepository {
     findAll(): Promise<Category[]>,
     deleteById(id: string): Promise<Category>,
     updateById(category: Category, id: string): Promise<Category>
+    filterCategory(startDate: Date | null, endDate: Date | null): Promise<Category[]>
 }
