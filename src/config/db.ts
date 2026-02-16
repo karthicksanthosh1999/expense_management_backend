@@ -1,10 +1,12 @@
 import { Pool } from "pg";
 
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  user: "postgres",
+  host: process.env.DB_HOST || "",
+  database: "expense",
+  password: "2020",
+  port: Number(process.env.DB_PORT),
+  max: 20,
 });
 
 pool.on("connect", () => {
