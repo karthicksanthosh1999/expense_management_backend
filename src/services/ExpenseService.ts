@@ -1,6 +1,6 @@
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
 import { Expense, ExpenseType } from "../entities/Expense";
-import { TExpenseCategoryOTO, TExpenseFilterValues } from "../types/expenseTypes";
+import { TCurrentExpenseAmountType, TExpenseCategoryOTO } from "../types/expenseTypes";
 
 export class ExpenseServices {
   constructor(private expenseRepo: ExpenseRepository) { }
@@ -69,7 +69,7 @@ export class ExpenseServices {
     return this.expenseRepo.findAll(whereClause, values, limit, offset);
   }
 
-  async deleteExpense(id: string): Promise<Expense> {
+  async deleteSingleExpense(id: string): Promise<Expense> {
     const expense = await this.expenseRepo.deleteById(id);
     return expense;
   }
@@ -107,6 +107,11 @@ export class ExpenseServices {
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const amount = this.expenseRepo.getAmount(whereClause, values);
+    return amount;
+  }
+
+  async getCurrentAmount(): Promise<TCurrentExpenseAmountType> {
+    const amount = await this.expenseRepo.currentAmount();
     return amount;
   }
 }

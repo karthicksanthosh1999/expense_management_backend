@@ -118,4 +118,9 @@ export class PostgresCategoryRepository implements CategoryRepository {
         )
         return result.rows[0]
     }
+
+    async ai_message(message: string): Promise<string> {
+        let result = await pool.query("SELECT * FROM category");
+        return result.rows[0]
+    }
 }

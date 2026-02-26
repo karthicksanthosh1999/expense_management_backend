@@ -1,4 +1,6 @@
 import { Expense } from "../entities/Expense";
+import { TCurrentExpenseAmountType } from "../types/expenseTypes";
+
 export interface ExpenseRepository {
     createExpense(expense: Expense): Promise<Expense>,
     getAmount(whereClause: string,
@@ -9,5 +11,6 @@ export interface ExpenseRepository {
         limit: number,
         offset: number): Promise<Expense[]>,
     deleteById(id: string): Promise<Expense>,
-    updateById(expense: Expense, id: string): Promise<Expense>
+    updateById(expense: Expense, id: string): Promise<Expense>,
+    currentAmount(): Promise<TCurrentExpenseAmountType>
 }

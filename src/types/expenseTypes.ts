@@ -25,3 +25,7 @@ export type TExpenseFilterValues = {
     expenseType: TExpense | null,
     search: string | null
 }
+
+export type TCurrentExpenseAmountType = {
+    current_amount: number
+}

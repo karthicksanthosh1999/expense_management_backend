@@ -34,4 +34,9 @@ export class CategoryService {
         const updateCategory = await this.categoryRepo.updateById(data, id);
         return updateCategory
     }
-}
+
+    async ai_category(message: string): Promise<string> {
+        const createCategory = await this.categoryRepo.ai_message(message);
+        return createCategory;
+    }
+}   

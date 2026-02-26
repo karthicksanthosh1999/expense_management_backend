@@ -89,7 +89,7 @@ export class ExpenseController {
     if (!idValues) {
       throw new AppError("Id is required!", 400);
     }
-    const expense = await this.expenseService.deleteExpense(idValues);
+    const expense = await this.expenseService.deleteSingleExpense(idValues);
     if (!expense) {
       throw new AppError("Expense Not Found!", 404);
     }
@@ -120,5 +120,14 @@ export class ExpenseController {
       message: "Amount Fetched Successfully",
       data: amount ?? 0,
     });
+  }
+
+  async getCurrentAmountController(_req: Request, res: Response) {
+    const amount = await this.expenseService.getCurrentAmount()
+    return res.status(200).json({
+      message: "Current Amount Get Successfully",
+      data: amount,
+      code: 200
+    })
   }
 }

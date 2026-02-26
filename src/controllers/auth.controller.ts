@@ -3,7 +3,7 @@ import { AuthService } from "../services/AuthService";
 import { AppError } from "../middlewares/errors/appError";
 
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -15,9 +15,10 @@ export class AuthController {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.json({
@@ -44,8 +45,22 @@ export class AuthController {
   }
 
   async refresh(req: Request, res: Response) {
-    const { refreshToken } = req.cookies.refreshToken;
-    const { accessToken } = await this.authService.refresh(refreshToken);
+    const { refreshToken } = req.cookies;
+
+    if (!refreshToken) {
+      throw new AppError("Refresh token missing", 401);
+    }
+
+    const { accessToken, refreshToken: newRefreshToken } =
+      await this.authService.refresh(refreshToken);
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     return res.json({ accessToken });
   }

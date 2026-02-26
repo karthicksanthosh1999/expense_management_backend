@@ -7,4 +7,7 @@ export interface CategoryRepository {
     deleteById(id: string): Promise<Category>,
     updateById(category: Category, id: string): Promise<Category>
     filterCategory(startDate: Date | null, endDate: Date | null): Promise<Category[]>
+
+    // AI INTERFACES
+    ai_message(message: string): Promise<string>
 }

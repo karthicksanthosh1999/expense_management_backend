@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CategoryService } from "../services/CategoryServices";
 import { AppError } from "../middlewares/errors/appError";
+import { ai_model } from "../config/ai";
 
 export class CategoryController {
     constructor(private categoryService: CategoryService) { }
@@ -17,6 +18,15 @@ export class CategoryController {
             message: "Category Created Successfully",
             data: category
         })
+    }
+
+    async ai_createCategory(req: Request, res: Response) {
+        const { message } = req.body;
+        const response = await ai_model.invoke(message);
+        return res.json({
+            success: true,
+            data: response.content,
+        });
     }
 
     async filterCategory(req: Request, res: Response) {
@@ -55,12 +65,17 @@ export class CategoryController {
     }
 
     async getSingleCategory(req: Request, res: Response) {
-        const { id } = req.body;
+        const { id } = req.params;
 
-        if (!id) {
-            throw new AppError("Invalid category id", 404, false)
+        const idValues = typeof id === "string" ? id : "";
+
+        if (!idValues) {
+            throw new AppError("Id is required!", 400);
         }
-        const category = await this.categoryService.singleCategory(id)
+        const category = await this.categoryService.singleCategory(idValues);
+        if (!category) {
+            throw new AppError("Expense Not Found!", 404);
+        }
         return res.status(200).json({
             message: "Category Fetch Successfully",
             data: category
@@ -69,17 +84,20 @@ export class CategoryController {
 
     async deleteCategory(req: Request, res: Response) {
 
-        const { id } = req.body;
-        if (!id) {
+        const { id } = req.params;
+
+        const idValues = typeof id === "string" ? id : "";
+
+        if (!idValues) {
             throw new AppError("Invalid category id", 404, false)
         }
-        const existingCategory = await this.categoryService.singleCategory(id)
+        const existingCategory = await this.categoryService.singleCategory(idValues)
         if (!existingCategory) {
             throw new AppError("Category Not Exist", 404, false)
         }
 
 
-        const category = await this.categoryService.deleteCategory(id);
+        const category = await this.categoryService.deleteCategory(idValues);
         return res.status(200).json({
             message: "Category Deleted Successfully",
             data: category

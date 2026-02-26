@@ -8,7 +8,7 @@ import {
 } from "../utils/jwt";
 
 export class AuthService {
-  constructor(private userRepo: UserRepository) {}
+  constructor(private userRepo: UserRepository) { }
 
   async login(email: string, password: string) {
     const validUser = await this.userRepo.findByEmail(email);
@@ -45,14 +45,14 @@ export class AuthService {
 
     const newRefreshToken = generateAccessToken(user);
 
-    return { accessToken: newRefreshToken };
+    return { accessToken: newRefreshToken, refreshToken };
   }
 
   async decodeUser(refreshToken: string) {
     if (!refreshToken) {
       throw new AppError("Refresh token missing", 401);
     }
-
+    console.log(refreshToken)
     const payload = verifyRefreshToken(refreshToken);
 
     const user = await this.userRepo.findById(payload.id);

@@ -1,6 +1,7 @@
 import { pool } from "../config/db";
 import { Expense } from "../entities/Expense";
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
+import { TCurrentExpenseAmountType } from "../types/expenseTypes";
 
 export class PostgresExpenseRepository implements ExpenseRepository {
     async createExpense(expense: Expense): Promise<Expense> {
@@ -116,6 +117,13 @@ export class PostgresExpenseRepository implements ExpenseRepository {
         let result = await pool.query(`
                 SELECT COALESCE(amount, 0) AS total_amount FROM expense a ${whereClause}
             `, values)
+        return result.rows[0]
+    }
+
+    async currentAmount(): Promise<TCurrentExpenseAmountType> {
+        let result = await pool.query(`
+                SELECT SUM(amount) AS current_amount FROM expense
+            `)
         return result.rows[0]
     }
 }
