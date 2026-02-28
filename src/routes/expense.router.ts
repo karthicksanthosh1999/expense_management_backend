@@ -15,5 +15,6 @@ expenseRouter.get(`/getSingle/:id`, (req, res) => expenseController.findSingleEx
 expenseRouter.delete(`/delete/:id`, (req, res) => expenseController.deleteExpense(req, res))
 expenseRouter.get(`/amount`, (req, res) => expenseController.getAmount(req, res))
 expenseRouter.get(`/currentAmount`, (req, res) => expenseController.getCurrentAmountController(req, res))
+expenseRouter.get(`/currentWeekAmount`, (req, res) => expenseController.getCurrentWeekExpenseChartController(req, res))
 
 export default expenseRouter;

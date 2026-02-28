@@ -130,4 +130,13 @@ export class ExpenseController {
       code: 200
     })
   }
+
+  async getCurrentWeekExpenseChartController(_req: Request, res: Response) {
+    const currentWeeks = await this.expenseService.getCurrentWeekChartService();
+    return res.status(200).json({
+      message: "Current Week Amount Get Successfully",
+      data: currentWeeks,
+      code: 200
+    })
+  }
 }

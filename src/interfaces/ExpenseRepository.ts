@@ -1,5 +1,5 @@
 import { Expense } from "../entities/Expense";
-import { TCurrentExpenseAmountType } from "../types/expenseTypes";
+import { TCurrentExpenseAmountType, TCurrentWeekExpenseTypeChart } from "../types/expenseTypes";
 
 export interface ExpenseRepository {
     createExpense(expense: Expense): Promise<Expense>,
@@ -12,5 +12,6 @@ export interface ExpenseRepository {
         offset: number): Promise<Expense[]>,
     deleteById(id: string): Promise<Expense>,
     updateById(expense: Expense, id: string): Promise<Expense>,
-    currentAmount(): Promise<TCurrentExpenseAmountType>
+    currentAmount(): Promise<TCurrentExpenseAmountType>,
+    getCurrentWeekChart(): Promise<TCurrentWeekExpenseTypeChart>
 }

@@ -1,7 +1,7 @@
 import { pool } from "../config/db";
 import { Expense } from "../entities/Expense";
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
-import { TCurrentExpenseAmountType } from "../types/expenseTypes";
+import { TCurrentExpenseAmountType, TCurrentWeekExpenseTypeChart } from "../types/expenseTypes";
 
 export class PostgresExpenseRepository implements ExpenseRepository {
     async createExpense(expense: Expense): Promise<Expense> {
@@ -18,7 +18,6 @@ export class PostgresExpenseRepository implements ExpenseRepository {
         limit: number,
         offset: number
     ): Promise<Expense[]> {
-        console.log(values)
         const query = `
                         SELECT
                         a.id,
@@ -104,11 +103,13 @@ export class PostgresExpenseRepository implements ExpenseRepository {
                 userId=$3, 
                 categoryId=$4
                 expenseType=$5
-                `, [expense.amount,
-        expense.description,
-        expense.userId,
-        expense.categoryId,
-        expense.expenseType]
+                `, [
+            expense.amount,
+            expense.description,
+            expense.userId,
+            expense.categoryId,
+            expense.expenseType
+        ]
         );
         return result.rows[0]
     }
@@ -126,4 +127,21 @@ export class PostgresExpenseRepository implements ExpenseRepository {
             `)
         return result.rows[0]
     }
+
+    async getCurrentWeekChart(): Promise<TCurrentWeekExpenseTypeChart> {
+        const result = await pool.query(`
+    SELECT 
+      TO_CHAR("createdat", 'Day') AS day,
+      SUM(CASE WHEN "expenseType" = 'Expense' THEN amount ELSE 0 END) AS expense,
+      SUM(CASE WHEN "expenseType" = 'Income' THEN amount ELSE 0 END) AS income
+    FROM expense
+    WHERE 
+    DATE_TRUNC('month', "createdat") = DATE_TRUNC('month', CURRENT_DATE)
+    GROUP BY day, DATE_PART('dow', "createdat")
+    ORDER BY DATE_PART('dow', "createdat");
+    `);
+
+        return result.rows[0]
+    }
+
 }

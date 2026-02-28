@@ -29,3 +29,9 @@ export type TExpenseFilterValues = {
 export type TCurrentExpenseAmountType = {
     current_amount: number
 }
+
+export type TCurrentWeekExpenseTypeChart = {
+    day: string,
+    expense: string,
+    income: string
+}

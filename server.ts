@@ -8,6 +8,8 @@ import categoryRouter from "./src/routes/category.router";
 import expenseRouter from "./src/routes/expense.router";
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from './src/docs/swagger'
 dotenv.config();
 
 const app: Application = express();
@@ -17,11 +19,15 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://192.168.2.48:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
+
+
+// SWAGGER ROUTES
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ROUTES
 app.use("/api/users", userRouters);

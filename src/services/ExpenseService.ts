@@ -1,6 +1,6 @@
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
 import { Expense, ExpenseType } from "../entities/Expense";
-import { TCurrentExpenseAmountType, TExpenseCategoryOTO } from "../types/expenseTypes";
+import { TCurrentExpenseAmountType, TCurrentWeekExpenseTypeChart, TExpenseCategoryOTO } from "../types/expenseTypes";
 
 export class ExpenseServices {
   constructor(private expenseRepo: ExpenseRepository) { }
@@ -113,5 +113,10 @@ export class ExpenseServices {
   async getCurrentAmount(): Promise<TCurrentExpenseAmountType> {
     const amount = await this.expenseRepo.currentAmount();
     return amount;
+  }
+
+  async getCurrentWeekChartService(): Promise<TCurrentWeekExpenseTypeChart> {
+    const currentWeekData = await this.expenseRepo.getCurrentWeekChart()
+    return currentWeekData
   }
 }
