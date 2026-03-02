@@ -1,24 +1,35 @@
 import { pool } from "../config/db";
 import { Expense } from "../entities/Expense";
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
-import { TCurrentExpenseAmountType, TCurrentWeekExpenseTypeChart } from "../types/expenseTypes";
+import {
+  TCurrentExpenseAmountType,
+  TCurrentWeekExpenseTypeChart,
+} from "../types/expenseTypes";
 
 export class PostgresExpenseRepository implements ExpenseRepository {
-    async createExpense(expense: Expense): Promise<Expense> {
-        const result = await pool.query(
-            `
+  async createExpense(expense: Expense): Promise<Expense> {
+    const result = await pool.query(
+      `
             INSERT INTO expense (amount, categoryId, userId, description, expenseType) VALUES ($1,$2, $3,$4, $5) RETURNING *
-            `, [expense.amount, expense.categoryId, expense.userId, expense.description, expense.expenseType]);
-        return result.rows[0]
-    }
+            `,
+      [
+        expense.amount,
+        expense.categoryId,
+        expense.userId,
+        expense.description,
+        expense.expenseType,
+      ],
+    );
+    return result.rows[0];
+  }
 
-    async findAll(
-        whereClause: string,
-        values: any[],
-        limit: number,
-        offset: number
-    ): Promise<Expense[]> {
-        const query = `
+  async findAll(
+    whereClause: string,
+    values: any[],
+    limit: number,
+    offset: number,
+  ): Promise<Expense[]> {
+    const query = `
                         SELECT
                         a.id,
                         a.amount,
@@ -50,14 +61,14 @@ export class PostgresExpenseRepository implements ExpenseRepository {
                         OFFSET $${values.length + 2};
                     `;
 
-        const result = await pool.query(query, [...values, limit, offset]);
+    const result = await pool.query(query, [...values, limit, offset]);
 
-        return result.rows;
-    }
+    return result.rows;
+  }
 
-    async fineById(id: string): Promise<Expense> {
-        let result = await pool.query(
-            `
+  async fineById(id: string): Promise<Expense> {
+    let result = await pool.query(
+      `
             SELECT
             a.id,
             a.amount,
@@ -84,18 +95,20 @@ export class PostgresExpenseRepository implements ExpenseRepository {
             INNER JOIN users b ON a.userId = b.id
             INNER JOIN category c ON a.categoryId = c.id
             WHERE a.id = $1
-            `, [id]
-        )
-        return result.rows[0]
-    }
+            `,
+      [id],
+    );
+    return result.rows[0];
+  }
 
-    async deleteById(id: string): Promise<Expense> {
-        let result = await pool.query(`DELETE FROM expense WHERE id= $1`, [id]);
-        return result.rows[0]
-    }
+  async deleteById(id: string): Promise<Expense> {
+    let result = await pool.query(`DELETE FROM expense WHERE id= $1`, [id]);
+    return result.rows[0];
+  }
 
-    async updateById(expense: Expense, id: string): Promise<Expense> {
-        let result = await pool.query(`
+  async updateById(expense: Expense, id: string): Promise<Expense> {
+    let result = await pool.query(
+      `
             UPDATE expense 
             SET 
                 amount=$1, 
@@ -103,45 +116,56 @@ export class PostgresExpenseRepository implements ExpenseRepository {
                 userId=$3, 
                 categoryId=$4
                 expenseType=$5
-                `, [
-            expense.amount,
-            expense.description,
-            expense.userId,
-            expense.categoryId,
-            expense.expenseType
-        ]
-        );
-        return result.rows[0]
-    }
+                `,
+      [
+        expense.amount,
+        expense.description,
+        expense.userId,
+        expense.categoryId,
+        expense.expenseType,
+      ],
+    );
+    return result.rows[0];
+  }
 
-    async getAmount(whereClause: string, values: any[]): Promise<{ amount: number; }> {
-        let result = await pool.query(`
+  async getAmount(
+    whereClause: string,
+    values: any[],
+  ): Promise<{ amount: number }> {
+    let result = await pool.query(
+      `
                 SELECT COALESCE(amount, 0) AS total_amount FROM expense a ${whereClause}
-            `, values)
-        return result.rows[0]
-    }
+            `,
+      values,
+    );
+    return result.rows[0];
+  }
 
-    async currentAmount(): Promise<TCurrentExpenseAmountType> {
-        let result = await pool.query(`
+  async currentAmount(): Promise<TCurrentExpenseAmountType> {
+    let result = await pool.query(`
                 SELECT SUM(amount) AS current_amount FROM expense
-            `)
-        return result.rows[0]
-    }
+            `);
+    return result.rows[0];
+  }
 
-    async getCurrentWeekChart(): Promise<TCurrentWeekExpenseTypeChart> {
-        const result = await pool.query(`
-    SELECT 
-      TO_CHAR("createdat", 'Day') AS day,
-      SUM(CASE WHEN "expenseType" = 'Expense' THEN amount ELSE 0 END) AS expense,
-      SUM(CASE WHEN "expenseType" = 'Income' THEN amount ELSE 0 END) AS income
-    FROM expense
-    WHERE 
-    DATE_TRUNC('month', "createdat") = DATE_TRUNC('month', CURRENT_DATE)
-    GROUP BY day, DATE_PART('dow', "createdat")
-    ORDER BY DATE_PART('dow', "createdat");
-    `);
+  async getCurrentWeekChart(): Promise<TCurrentWeekExpenseTypeChart[]> {
+    const result = await pool.query(`
+WITH days AS (
+  SELECT 
+    generate_series(0,6) AS dow
+)
+SELECT 
+  TRIM(TO_CHAR(TO_DATE(d.dow::text, 'D'), 'Day')) AS day,
+  COALESCE(SUM(CASE WHEN e."expensetype" = 'Expense' THEN e.amount END), 0) AS expense,
+  COALESCE(SUM(CASE WHEN e."expensetype" = 'Income' THEN e.amount END), 0) AS income
+FROM days d
+LEFT JOIN expense e 
+  ON DATE_PART('dow', e."createdat") = d.dow
+  AND DATE_TRUNC('month', e."createdat") = DATE_TRUNC('month', CURRENT_DATE)
+GROUP BY d.dow
+ORDER BY d.dow;
+`);
 
-        return result.rows[0]
-    }
-
+    return result.rows;
+  }
 }

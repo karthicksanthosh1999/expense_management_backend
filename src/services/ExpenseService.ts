@@ -1,9 +1,13 @@
 import { ExpenseRepository } from "../interfaces/ExpenseRepository";
 import { Expense, ExpenseType } from "../entities/Expense";
-import { TCurrentExpenseAmountType, TCurrentWeekExpenseTypeChart, TExpenseCategoryOTO } from "../types/expenseTypes";
+import {
+  TCurrentExpenseAmountType,
+  TCurrentWeekExpenseTypeChart,
+  TExpenseCategoryOTO,
+} from "../types/expenseTypes";
 
 export class ExpenseServices {
-  constructor(private expenseRepo: ExpenseRepository) { }
+  constructor(private expenseRepo: ExpenseRepository) {}
 
   async addExpense(data: TExpenseCategoryOTO): Promise<Expense> {
     const signedAmount =
@@ -94,7 +98,7 @@ export class ExpenseServices {
 
     if (endDate) {
       const endOfDay = new Date(endDate);
-      endOfDay.setHours(23, 59, 59, 999)
+      endOfDay.setHours(23, 59, 59, 999);
       values.push(endOfDay);
       conditions.push(`a.createdAt <= $${values.length}`);
     }
@@ -115,8 +119,8 @@ export class ExpenseServices {
     return amount;
   }
 
-  async getCurrentWeekChartService(): Promise<TCurrentWeekExpenseTypeChart> {
-    const currentWeekData = await this.expenseRepo.getCurrentWeekChart()
-    return currentWeekData
+  async getCurrentWeekChartService(): Promise<TCurrentWeekExpenseTypeChart[]> {
+    const currentWeekData = await this.expenseRepo.getCurrentWeekChart();
+    return currentWeekData;
   }
 }
