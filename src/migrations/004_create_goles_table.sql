@@ -1,0 +1,13 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE IF NOT EXISTS goal (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    target VARCHAR(100) NOT NULL,
+    amount INTEGER DEFAULT (0) NOT NULL,
+    goal INTEGER DEFAULT (0) NOT NULL,
+    userId UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    createdAt TIMESTAMP DEFAULT NOW(),
+    updatedAt TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_goal_userId ON goal (userId)
