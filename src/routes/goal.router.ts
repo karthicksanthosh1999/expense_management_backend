@@ -21,5 +21,8 @@ goalRouter.get("/getSingle/:id", (req, res) =>
 goalRouter.delete("/delete/:id", (req, res) =>
   goalController.deleteGoalController(req, res),
 );
+goalRouter.put("/amount", (req, res) =>
+  goalController.addAmountGoalController(req, res),
+);
 
 export default goalRouter;

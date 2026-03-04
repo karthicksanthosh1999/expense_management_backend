@@ -11,5 +11,6 @@ export interface GoalRepository {
   //     offset: number,
   //   ): Promise<Goal[]>;
   deleteById(id: string): Promise<Goal>;
-  updateById(expense: Goal, id: string): Promise<Goal>;
+  updateById(goal: Goal, id: string): Promise<Goal>;
+  addAmount(id: string, amount: number): Promise<Goal>;
 }

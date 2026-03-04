@@ -3,7 +3,7 @@ import { GoalRepository } from "../interfaces/GoalsRepository";
 import { goalOTO } from "../types/goalTypes";
 
 export class GoalServices {
-  constructor(private goalRepo: GoalRepository) {}
+  constructor(private goalRepo: GoalRepository) { }
 
   async createGoalService(data: goalOTO): Promise<Goal> {
     const result = await this.goalRepo.createGoal(data);
@@ -29,4 +29,10 @@ export class GoalServices {
     const result = await this.goalRepo.updateById(data, id);
     return result;
   }
+
+  async addAmountService(id: string, amount: number): Promise<Goal> {
+    const result = await this.goalRepo.addAmount(id, amount);
+    return result
+  }
+
 }
