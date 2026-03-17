@@ -7,7 +7,6 @@ export class AuthController {
 
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
-
     const { accessToken, refreshToken, user } = await this.authService.login(
       email,
       password,
@@ -64,6 +63,30 @@ export class AuthController {
 
     return res.json({ accessToken });
   }
+
+  async sendOtp(req: Request, res: Response) {
+    const { email } = req.body;
+
+    const data = await this.authService.sendOtp(email);
+
+    return res.status(200).json(data);
+  }
+
+  async verifyEmail(req: Request, res: Response) {
+    const { email, otp } = req.body;
+
+    const data = await this.authService.verifyOtp(email, otp);
+
+    return res.status(200).json(data);
+  }
+
+  async resetPassword(req: Request, res: Response) {
+    const { email, otp, newPassword } = req.body;
+    const data = await this.authService.resetPassword(email, otp, newPassword);
+    return res.status(200).json(data);
+  }
+
+
 
   async logout(req: Request, res: Response) {
     const { id } = req.body;

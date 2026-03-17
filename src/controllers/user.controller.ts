@@ -1,3 +1,4 @@
+import { AppError } from "../middlewares/errors/appError";
 import { UserServices } from "../services/UserServices";
 import { Request, Response } from "express";
 
@@ -42,5 +43,30 @@ export class UserController {
             message: "Users Fetch Successfully",
             data: users
         })
+    }
+
+    async updateUser(req: Request, res: Response) {
+        const { id } = req.params;
+        const { email, fullName, mobile } = req.body;
+        console.log(id, email, fullName, mobile)
+        const idValue = typeof id === "string" ? id : "";
+        if (!idValue) {
+            throw new AppError("Id is required!", 400);
+        }
+        const expense = await this.userServices.updateUser(idValue, {
+            id: idValue,
+            email,
+            fullName,
+            mobile
+        })
+        if (!expense) {
+            throw new AppError("User Not Found!", 404);
+        }
+        return res.status(200).json({
+            message: "User Updated Successfully",
+            statusCode: 200,
+            success: true,
+            data: expense,
+        });
     }
 }

@@ -7,7 +7,7 @@ import {
 } from "../types/expenseTypes";
 
 export class ExpenseServices {
-  constructor(private expenseRepo: ExpenseRepository) {}
+  constructor(private expenseRepo: ExpenseRepository) { }
 
   async addExpense(data: TExpenseCategoryOTO): Promise<Expense> {
     const signedAmount =

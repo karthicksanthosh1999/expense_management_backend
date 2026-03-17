@@ -6,6 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     mobile VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(150) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
+    is_verified BOOLEAN DEFAULT FALSE,
+    otp VARCHAR(6),
+    otp_expire TIMESTAMP,
     createAt TIMESTAMP NOT NULL DEFAULT NOW(),
     updatedAt TIMESTAMP NOT NULL DEFAULT NOW()
 );

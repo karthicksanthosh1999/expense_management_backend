@@ -16,5 +16,9 @@ authRoutes.get("/decode", (req, res) => authController.decodeUser(req, res));
 authRoutes.post("/logout", authMiddleware, (req, res) =>
   authController.logout(req, res),
 );
+authRoutes.post("/send-otp", authController.sendOtp);
+authRoutes.post("/verify-email", authController.verifyEmail);
+authRoutes.post("/reset-password", authController.resetPassword);
+
 
 export default authRoutes;

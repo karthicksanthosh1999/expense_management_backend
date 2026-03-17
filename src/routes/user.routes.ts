@@ -15,6 +15,9 @@ userRouters.post("/register", (req, res) =>
 userRouters.delete("/delete", (req, res) =>
   userController.deleteUser(req, res),
 );
+userRouters.put("/update/:id", (req, res) =>
+  userController.updateUser(req, res),
+);
 userRouters.get("/getAll", (req, res) => userController.getAllUsers(req, res));
 
 export default userRouters;

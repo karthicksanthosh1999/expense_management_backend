@@ -3,7 +3,7 @@ import { GoalServices } from "../services/GoalServices";
 import { AppError } from "../middlewares/errors/appError";
 
 export class GoalController {
-  constructor(private goalService: GoalServices) {}
+  constructor(private goalService: GoalServices) { }
 
   async createGoalController(req: Request, res: Response) {
     const { target, amount, goal, userId } = req.body;
@@ -17,7 +17,7 @@ export class GoalController {
       message: "Goal Created Successfully",
       data,
       code: 201,
-      status: true,
+      status: true
     });
   }
 
@@ -27,7 +27,7 @@ export class GoalController {
       message: "Goal Fetch Successfully",
       data,
       code: 200,
-      status: true,
+      status: true
     });
   }
 
@@ -47,7 +47,7 @@ export class GoalController {
       message: "Goal Fetch Successfully",
       data: goal,
       code: 200,
-      status: true,
+      status: true
     });
   }
 
@@ -67,7 +67,7 @@ export class GoalController {
       message: "Goal Deleted Successfully",
       data: goal,
       code: 200,
-      status: true,
+      status: true
     });
   }
 
@@ -77,25 +77,22 @@ export class GoalController {
     const existingGoal = await this.goalService.singleGoal(goalId);
 
     if (!existingGoal) {
-      throw new AppError("Goal not found", 404);
+      throw new AppError("Goal not found", 404)
     }
     let sumAmount = existingGoal.amount + Number(amount);
-    console.log(sumAmount, existingGoal.amount, amount);
 
     if (existingGoal.goal < sumAmount) {
-      throw new AppError("Amount greater then the goal", 400);
+      throw new AppError("Amount greater then the goal", 400)
     }
 
-    const currentAmount = await this.goalService.addAmountService(
-      goalId,
-      sumAmount,
-    );
+    const currentAmount = await this.goalService.addAmountService(goalId, sumAmount);
 
     return res.status(201).json({
       message: "Amount Added Successfully",
       data: currentAmount,
       code: 201,
-      status: true,
+      status: true
     });
   }
+
 }

@@ -123,4 +123,9 @@ export class PostgresCategoryRepository implements CategoryRepository {
         let result = await pool.query("SELECT * FROM category");
         return result.rows[0]
     }
+
+    async getCategoryByUserId(userId: string): Promise<Category> {
+        let result = await pool.query(`SELECT * FROM category WHERE userId = $1`, [userId]);
+        return result.rows[0]
+    }
 }

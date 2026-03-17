@@ -2,6 +2,7 @@ import { Router } from "express";
 import { PostgresCategoryRepository } from "../repositories/CategoryRepository";
 import { CategoryService } from "../services/CategoryServices";
 import { CategoryController } from "../controllers/category.controller";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const categoryRouter = Router();
 
@@ -54,7 +55,7 @@ categoryRouter.post('/create', (req, res) => categoryController.createCategory(r
  *               items:
  *                 $ref: '#/components/schemas/Category'
  */
-categoryRouter.get('/getAll', (req, res) => categoryController.getAllCategory(req, res))
+categoryRouter.get('/getAll', authMiddleware, (req, res) => categoryController.getAllCategory(req, res))
 
 /**
  * @swagger
@@ -95,6 +96,9 @@ categoryRouter.post('/filter', (req, res) => categoryController.filterCategory(r
 
 // AI ROUTES
 categoryRouter.post('/ai/create', (req, res) => categoryController.ai_createCategory(req, res))
+categoryRouter.get("/ai/getCategory", authMiddleware, (req, res) => categoryController.ai_getCategoryByUserId(req, res)
+);
+
 
 
 export default categoryRouter;

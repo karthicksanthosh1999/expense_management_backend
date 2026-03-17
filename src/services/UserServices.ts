@@ -1,7 +1,7 @@
 import { User } from "../entities/User";
 import { UserRepository } from "../interfaces/UserRepository";
 import { AppError } from "../middlewares/errors/appError";
-import { CreateUserDTO } from "../types/userTypes";
+import { CreateUserDTO, updateUserDTO } from "../types/userTypes";
 import bcrypt from 'bcrypt'
 
 export class UserServices {
@@ -33,6 +33,13 @@ export class UserServices {
         const deletedUser = await this.userRepo.deleteById(id);
 
         return deletedUser
+    }
+
+    async updateUser(id: string, data: updateUserDTO): Promise<User> {
+        const user = await this.userRepo.findById(id);
+        if (!user) throw new AppError("User not found", 404);
+        const updateUser = await this.userRepo.updateById(id, data);
+        return updateUser
     }
 
     async getAllUsers(): Promise<User[]> {

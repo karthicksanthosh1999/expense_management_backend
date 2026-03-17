@@ -30,7 +30,6 @@ export class ExpenseController {
       page = "1",
       limit = "10",
     } = req.body;
-
     const pageNumber = Number(page);
     const limitSize = Number(limit);
 
@@ -77,6 +76,31 @@ export class ExpenseController {
     }
     return res.status(200).json({
       message: "Expense Fetch Successfully",
+      data: expense,
+    });
+  }
+
+  async updateExpense(req: Request, res: Response) {
+    const { id } = req.params;
+    const { amount, description, categoryId, expenseType } = req.body;
+    const idValue = typeof id === "string" ? id : "";
+    if (!idValue) {
+      throw new AppError("Id is required!", 400);
+    }
+    const expense = await this.expenseService.updateExpense(idValue, {
+      userId: idValue,
+      amount,
+      categoryId,
+      description,
+      expenseType
+    })
+    if (!expense) {
+      throw new AppError("Expense Not Found!", 404);
+    }
+    return res.status(200).json({
+      message: "Expense Updated Successfully",
+      statusCode: 200,
+      success: true,
       data: expense,
     });
   }

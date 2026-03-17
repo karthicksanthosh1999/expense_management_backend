@@ -39,4 +39,9 @@ export class CategoryService {
         const createCategory = await this.categoryRepo.ai_message(message);
         return createCategory;
     }
+
+    async ai_getCategoryByUserId(userId: string): Promise<Category> {
+        const allCategories = await this.categoryRepo.getCategoryByUserId(userId);
+        return allCategories
+    }
 }   

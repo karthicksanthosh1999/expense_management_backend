@@ -10,4 +10,5 @@ export interface CategoryRepository {
 
     // AI INTERFACES
     ai_message(message: string): Promise<string>
+    getCategoryByUserId(userId: string): Promise<Category>,
 }

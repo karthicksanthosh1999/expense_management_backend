@@ -13,6 +13,7 @@ expenseRouter.post(`/create`, (req, res) => expenseController.createExpense(req,
 expenseRouter.post(`/getAll`, (req, res) => expenseController.findAllExpense(req, res))
 expenseRouter.get(`/getSingle/:id`, (req, res) => expenseController.findSingleExpense(req, res))
 expenseRouter.delete(`/delete/:id`, (req, res) => expenseController.deleteExpense(req, res))
+expenseRouter.put(`/update/:id`, (req, res) => expenseController.updateExpense(req, res))
 expenseRouter.get(`/amount`, (req, res) => expenseController.getAmount(req, res))
 expenseRouter.get(`/currentAmount`, (req, res) => expenseController.getCurrentAmountController(req, res))
 expenseRouter.get(`/currentWeekAmount`, (req, res) => expenseController.getCurrentWeekExpenseChartController(req, res))

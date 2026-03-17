@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CategoryService } from "../services/CategoryServices";
 import { AppError } from "../middlewares/errors/appError";
 import { ai_model } from "../config/ai";
+import { RequestWithUser } from "../types/RequestWithUser";
 
 export class CategoryController {
     constructor(private categoryService: CategoryService) { }
@@ -18,15 +19,6 @@ export class CategoryController {
             message: "Category Created Successfully",
             data: category
         })
-    }
-
-    async ai_createCategory(req: Request, res: Response) {
-        const { message } = req.body;
-        const response = await ai_model.invoke(message);
-        return res.json({
-            success: true,
-            data: response.content,
-        });
     }
 
     async filterCategory(req: Request, res: Response) {
@@ -56,7 +48,7 @@ export class CategoryController {
         })
     }
 
-    async getAllCategory(_req: Request, res: Response) {
+    async getAllCategory(req: RequestWithUser, res: Response) {
         const categories = await this.categoryService.getAllCategory()
         return res.status(200).json({
             message: "Fetched All Categories Successfully",
@@ -102,5 +94,34 @@ export class CategoryController {
             message: "Category Deleted Successfully",
             data: category
         })
+    }
+
+    // AI USES CONTROLLERS
+    async ai_getCategoryByUserId(req: RequestWithUser, res: Response) {
+        const userId = req.user?.id
+        const idValues = typeof userId === 'string' ? userId : "";
+        if (!idValues) {
+            throw new AppError("userId is required", 400)
+        }
+        const category = await this.categoryService.ai_getCategoryByUserId(idValues)
+        if (!category) {
+            throw new AppError("Category Not Found!", 400)
+        }
+
+        return res.status(200).json({
+            message: "Category Fetch Successfully",
+            data: category,
+            status: true,
+            code: 200
+        })
+    }
+
+    async ai_createCategory(req: Request, res: Response) {
+        const { message } = req.body;
+        const response = await ai_model.invoke(message);
+        return res.json({
+            success: true,
+            data: response.content,
+        });
     }
 }
